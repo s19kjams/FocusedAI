@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import Depends, FastAPI
 from sqlalchemy.orm import relationship
 from fastapi import FastAPI
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
@@ -30,6 +30,16 @@ class Course(metadata):
     __tablename__ = "courses"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"))
+    teacher = relationship("Teacher", back_populates="courses")
+
+class Teacher(metadata):
+    __tablename__ = "teachers"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    courses = relationship("Course", back_populates="teacher")
+
+Teacher.courses = relationship("Course", back_populates="teacher")
 
 class Lesson(metadata):
     __tablename__ = "lessons"
@@ -37,13 +47,16 @@ class Lesson(metadata):
     title = Column(String)
     course_id = Column(Integer, ForeignKey("courses.id"))
     course = relationship("Course", back_populates="lessons")
+    
+Course.lessons = relationship("Lesson", back_populates="course")
 
-class User(metadata):
-    __tablename__ = "users"
+
+class Student(metadata):
+    __tablename__ = "students"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String)
+    enrolled_courses = relationship("Course", secondary="enrollments")
 
-Course.lessons = relationship("Lesson", back_populates="course")
 
 engine = create_engine(DATABASE_URL)
 metadata.metadata.create_all(engine)
@@ -60,58 +73,84 @@ def set_cache(key, value):
     cache[key] = value
 
 @app.post("/courses/", response_model=Course, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def create_course(name: str):
-    query = Course.insert().values(name=name)
-    course_id = await database.execute(query)
-    return {"id": course_id, "name": name}
+def create_course(name: str, teacher_id: int):
+    query = Course.insert().values(name=name, teacher_id=teacher_id)
+    course_id = database.execute(query)
+    return {"id": course_id, "name": name, "teacher_id": teacher_id}
 
 @app.get("/courses/", response_model=list[Course], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def get_courses():
+def get_courses():
     cache_key = hashkey("get_courses")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
 
     query = Course.select()
-    result = await database.fetch_all(query)
+    result = database.fetch_all(query)
 
     set_cache(cache_key, result)
     return result
 
 @app.post("/lessons/", response_model=Lesson, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def create_lesson(title: str, course_id: int):
+def create_lesson(title: str, course_id: int):
     query = Lesson.insert().values(title=title, course_id=course_id)
-    lesson_id = await database.execute(query)
+    lesson_id = database.execute(query)
     return {"id": lesson_id, "title": title, "course_id": course_id}
 
 @app.get("/lessons/", response_model=list[Lesson], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def get_lessons():
+def get_lessons():
     cache_key = hashkey("get_lessons")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
 
     query = Lesson.select()
-    result = await database.fetch_all(query)
+    result = database.fetch_all(query)
 
     set_cache(cache_key, result)
     return result
 
-@app.post("/users/", response_model=User, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def create_user(username: str):
-    query = User.insert().values(username=username)
-    user_id = await database.execute(query)
-    return {"id": user_id, "username": username}
+@app.post("/students/", response_model=Student, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+def create_student(username: str):
+    query = Student.insert().values(username=username)
+    student_id = database.execute(query)
+    return {"id": student_id, "username": username}
 
-@app.get("/users/", response_model=list[User], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
-async def get_users():
-    cache_key = hashkey("get_users")
+
+@app.get("/students/", response_model=list[Student], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+def get_students():
+    cache_key = hashkey("get_students")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
 
-    query = User.select()
-    result = await database.fetch_all(query)
+    query = Student.select()
+    result = database.fetch_all(query)
 
     set_cache(cache_key, result)
     return result
+
+
+@app.post("/teachers/", response_model=Teacher, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+def create_teacher(name: str):
+    query = Teacher.insert().values(name=name)
+    teacher_id = database.execute(query)
+    return {"id": teacher_id, "name": name}
+
+@app.get("/teachers/", response_model=list[Teacher], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+def get_teachers():
+    cache_key = hashkey("get_teachers")
+    cached_result = get_cache(cache_key)
+    if cached_result:
+        return cached_result
+
+    query = Teacher.select()
+    result = database.fetch_all(query)
+
+    set_cache(cache_key, result)
+    return result
+
+@app.post("/enroll/{student_id}/{course_id}/", dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+def enroll_student(student_id: int, course_id: int):
+    query = enrollments.insert().values(student_id=student_id, course_id=course_id)
+    database.execute(query)
