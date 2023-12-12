@@ -1,4 +1,4 @@
-FROM python:3.13.0a2-alpine3.19
+FROM python:3.12.1-slim-bullseye
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "main.py"]

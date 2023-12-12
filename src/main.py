@@ -27,35 +27,41 @@ database = Database(DATABASE_URL)
 metadata = declarative_base()
 
 class Course(metadata):
-    __tablename__ = "courses"
+    __tablename__ = "course"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    teacher_id = Column(Integer, ForeignKey("teachers.id"))
+    teacher_id = Column(Integer, ForeignKey("teacher.id"))
     teacher = relationship("Teacher", back_populates="courses")
+    lessons = relationship("Lesson", back_populates="course")
+    students = relationship("Student", secondary="enrollment", back_populates="enrolled_courses")
 
 class Teacher(metadata):
-    __tablename__ = "teachers"
+    __tablename__ = "teacher"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     courses = relationship("Course", back_populates="teacher")
 
-Teacher.courses = relationship("Course", back_populates="teacher")
-
 class Lesson(metadata):
-    __tablename__ = "lessons"
+    __tablename__ = "lesson"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
-    course_id = Column(Integer, ForeignKey("courses.id"))
+    course_id = Column(Integer, ForeignKey("course.id"))
     course = relationship("Course", back_populates="lessons")
-    
-Course.lessons = relationship("Lesson", back_populates="course")
-
 
 class Student(metadata):
-    __tablename__ = "students"
+    __tablename__ = "student"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String)
-    enrolled_courses = relationship("Course", secondary="enrollments")
+    enrolled_courses = relationship("Course", secondary="enrollment", back_populates="students")
+    
+
+class Enrollment(metadata):
+    __tablename__ = "enrollment"
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("student.id"))
+    course_id = Column(Integer, ForeignKey("course.id"))
+    student = relationship("Student", back_populates="enrollments")
+    course = relationship("Course", back_populates="enrollments")
 
 
 engine = create_engine(DATABASE_URL)
@@ -91,11 +97,13 @@ def get_courses():
     set_cache(cache_key, result)
     return result
 
+
 @app.post("/lessons/", response_model=Lesson, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 def create_lesson(title: str, course_id: int):
     query = Lesson.insert().values(title=title, course_id=course_id)
     lesson_id = database.execute(query)
     return {"id": lesson_id, "title": title, "course_id": course_id}
+
 
 @app.get("/lessons/", response_model=list[Lesson], dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 def get_lessons():
@@ -109,6 +117,7 @@ def get_lessons():
 
     set_cache(cache_key, result)
     return result
+
 
 @app.post("/students/", response_model=Student, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 def create_student(username: str):
@@ -152,5 +161,5 @@ def get_teachers():
 
 @app.post("/enroll/{student_id}/{course_id}/", dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 def enroll_student(student_id: int, course_id: int):
-    query = enrollments.insert().values(student_id=student_id, course_id=course_id)
+    query = Enrollment.insert().values(student_id=student_id, course_id=course_id)
     database.execute(query)
