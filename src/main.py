@@ -65,24 +65,27 @@ def get_lessons():
 
 
 @app.post("/students/", response_model=Student)
-def create_student(username: str):
-    query = Student.insert().values(username=username)
-    student_id = database.execute(query)
-    return {"id": student_id, "username": username}
+def create_student(student: StudentCreate, db: Session = Depends(get_db)):
+    return create_student(db=db, student=student)
+
+@app.delete("/students/{student_id}/")
+def delete_student(student_id: int, db: Session = Depends(get_db)):
+    delete_student(db=db, student_id=student_id)
+    return {"message": "Student deleted successfully"}
+
 
 
 @app.get("/students/", response_model=list[Student])
-def get_students():
+def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("get_students")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
 
-    query = Student.select()
-    result = database.fetch_all(query)
+    students = retrieve_students(db=db, skip=skip, limit=limit)
 
-    set_cache(cache_key, result)
-    return result
+    set_cache(cache_key, students)
+    return students
 
 
 @app.post("/teachers/", response_model=Teacher)

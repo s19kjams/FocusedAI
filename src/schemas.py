@@ -47,7 +47,7 @@ class StudentCreate(StudentBase):
 
 class Student(StudentBase):
     id: int
-    enrollments: List[Enrollment] = []
+    enrollments: List["Enrollment"] = [] 
 
     class Config:
         orm_mode = True
