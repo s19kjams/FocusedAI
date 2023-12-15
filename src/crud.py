@@ -41,17 +41,12 @@ def delete_course(db: Session, course_id: int):
     db.commit()
 
 
-def create_student(db: Session, student: StudentCreate):
+def add_student(db: Session, student: StudentCreate):
     db_student = DBStudent(**student.dict())
     db.add(db_student)
     db.commit()
     db.refresh(db_student)
     return db_student
-
-def delete_student(db: Session, student_id: int):
-    db_student = db.query(DBStudent).filter(DBStudent.id == student_id).first()
-    db.delete(db_student)
-    db.commit()
 
 def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBStudent).offset(skip).limit(limit).all()

@@ -66,13 +66,7 @@ def get_lessons():
 
 @app.post("/students/", response_model=Student)
 def create_student(student: StudentCreate, db: Session = Depends(get_db)):
-    return create_student(db=db, student=student)
-
-@app.delete("/students/{student_id}/")
-def delete_student(student_id: int, db: Session = Depends(get_db)):
-    delete_student(db=db, student_id=student_id)
-    return {"message": "Student deleted successfully"}
-
+    return add_student(db=db, student=student)
 
 
 @app.get("/students/", response_model=list[Student])

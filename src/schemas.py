@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import ForwardRef, List, Optional
 from pydantic import BaseModel
 
 class CourseBase(BaseModel):
@@ -61,8 +61,11 @@ class EnrollmentCreate(EnrollmentBase):
 
 class Enrollment(EnrollmentBase):
     id: int
-    student: Student
-    course: Course
+    student: ForwardRef("Student")
+    course: ForwardRef("Course")
 
     class Config:
         orm_mode = True
+
+Student.update_forward_refs()
+Enrollment.update_forward_refs()
