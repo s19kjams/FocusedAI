@@ -9,6 +9,7 @@ class CourseCreate(CourseBase):
 
 class Course(CourseBase):
     id: int
+    teacher_id: int
 
     class Config:
         orm_mode = True

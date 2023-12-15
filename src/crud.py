@@ -12,7 +12,7 @@ from schemas import (
 )
 
 
-def create_course(db: Session, course: CourseCreate):
+def add_course(db: Session, course: CourseCreate):
     db_course = DBCourse(**course.dict())
     db.add(db_course)
     db.commit()

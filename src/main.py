@@ -27,7 +27,7 @@ def get_db():
 
 @app.post("/courses/", response_model=Course)
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
-    return create_course(db=db, course=course)
+    return add_course(db=db, course=course)
 
 @app.get("/courses/", response_model=list[Course])
 def get_courses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
