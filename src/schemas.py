@@ -29,13 +29,13 @@ class Teacher(TeacherBase):
 
 class LessonBase(BaseModel):
     title: str
+    course_id: int
 
 class LessonCreate(LessonBase):
     pass
 
 class Lesson(LessonBase):
     id: int
-    course_id: int
 
     class Config:
         orm_mode = True

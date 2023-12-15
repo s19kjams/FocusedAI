@@ -5,7 +5,6 @@ from database import *
 from models import *
 from crud import *
 from schemas import *
-import redis
 import uvicorn
 
 app = FastAPI()
@@ -44,24 +43,22 @@ def get_courses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @app.post("/lessons/", response_model=Lesson)
-def create_lesson(title: str, course_id: int):
-    query = Lesson.insert().values(title=title, course_id=course_id)
-    lesson_id = database.execute(query)
-    return {"id": lesson_id, "title": title, "course_id": course_id}
+def create_lesson(lesson: LessonCreate, db: Session = Depends(get_db)):
+    return add_lesson(db=db, lesson=lesson)
 
 
 @app.get("/lessons/", response_model=list[Lesson])
-def get_lessons():
-    cache_key = hashkey("get_lessons")
+def get_lessons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    cache_key = hashkey("lessons")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
+    
+    lessons = retrieve_lessons(db=db, skip=skip, limit=limit)
 
-    query = Lesson.select()
-    result = database.fetch_all(query)
+    set_cache(cache_key, lessons)
 
-    set_cache(cache_key, result)
-    return result
+    return lessons
 
 
 @app.post("/students/", response_model=Student)
@@ -71,7 +68,7 @@ def create_student(student: StudentCreate, db: Session = Depends(get_db)):
 
 @app.get("/students/", response_model=list[Student])
 def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    cache_key = hashkey("get_students")
+    cache_key = hashkey("students")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
@@ -89,7 +86,7 @@ def create_student(teacher: TeacherCreate, db: Session = Depends(get_db)):
 
 @app.get("/teachers/", response_model=list[Teacher])
 def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    cache_key = hashkey("get_teachers")
+    cache_key = hashkey("teachers")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result

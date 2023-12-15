@@ -7,10 +7,7 @@ from models import (
     Enrollment as DBEnrollment,
 )
 
-from schemas import (
-    CourseCreate, StudentCreate, TeacherCreate
-)
-
+from schemas import *
 
 def add_course(db: Session, course: CourseCreate):
     db_course = DBCourse(**course.dict())
@@ -43,6 +40,11 @@ def add_student(db: Session, student: StudentCreate):
     db.refresh(db_student)
     return db_student
 
+
+def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(DBStudent).offset(skip).limit(limit).all()
+
+
 def add_teacher(db: Session, teacher: TeacherCreate):
     db_teacher = DBTeacher(**teacher.dict())
     db.add(db_teacher)
@@ -54,5 +56,13 @@ def add_teacher(db: Session, teacher: TeacherCreate):
 def retrieve_teachers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBTeacher).offset(skip).limit(limit).all()
 
-def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(DBStudent).offset(skip).limit(limit).all()
+
+def add_lesson(db: Session, lesson: LessonCreate):
+    db_lesson = DBLesson(**lesson.dict())
+    db.add(db_lesson)
+    db.commit()
+    db.refresh(db_lesson)
+    return db_lesson
+
+def retrieve_lessons(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(DBLesson).offset(skip).limit(limit).all()
