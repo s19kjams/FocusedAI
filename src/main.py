@@ -96,11 +96,28 @@ def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     set_cache(cache_key, teachers)
     return teachers
 
-@app.post("/enroll/{student_id}/{course_id}/")
-def enroll_student(student_id: int, course_id: int):
-    query = Enrollment.insert().values(student_id=student_id, course_id=course_id)
-    database.execute(query)
 
+@app.post("/enroll/")
+def enroll_student(enrollment: EnrollmentCreate, db: Session = Depends(get_db)):
+    return add_enrollment(db=db, enrollment=enrollment)
+
+
+@app.get("/enrollments/", response_model=list[Enrollment])
+def get_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    cache_key = hashkey("enrollments")
+    cached_result = get_cache(cache_key)
+    if cached_result:
+        return cached_result
+
+    enrollments = retrieve_enrollments(db=db, skip=skip, limit=limit)
+
+    set_cache(cache_key, enrollments)
+    return enrollments
+
+@app.get("/students/{student_id}/enrollments/", response_model=list[Enrollment])
+def get_student_enrollments(student_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    enrollments = retrieve_student_enrollments(db=db, student_id=student_id, skip=skip, limit=limit)
+    return enrollments
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

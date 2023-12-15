@@ -62,11 +62,6 @@ class EnrollmentCreate(EnrollmentBase):
 
 class Enrollment(EnrollmentBase):
     id: int
-    student: ForwardRef("Student")
-    course: ForwardRef("Course")
 
     class Config:
         orm_mode = True
-
-Student.update_forward_refs()
-Enrollment.update_forward_refs()

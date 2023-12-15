@@ -66,3 +66,17 @@ def add_lesson(db: Session, lesson: LessonCreate):
 
 def retrieve_lessons(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBLesson).offset(skip).limit(limit).all()
+
+
+def add_enrollment(db: Session, enrollment: EnrollmentCreate):
+    db_enrollment = DBEnrollment(**enrollment.dict())
+    db.add(db_enrollment)
+    db.commit()
+    db.refresh(db_enrollment)
+    return db_enrollment
+
+def retrieve_enrollments(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(DBEnrollment).offset(skip).limit(limit).all()
+
+def retrieve_student_enrollments(db: Session, student_id: int, skip: int = 0, limit: int = 100):
+    return db.query(DBEnrollment).filter(DBEnrollment.student_id == student_id).offset(skip).limit(limit).all()
