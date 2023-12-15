@@ -3,13 +3,13 @@ from pydantic import BaseModel
 
 class CourseBase(BaseModel):
     name: str
+    teacher_id: int
 
 class CourseCreate(CourseBase):
     pass
 
 class Course(CourseBase):
     id: int
-    teacher_id: int
 
     class Config:
         orm_mode = True
