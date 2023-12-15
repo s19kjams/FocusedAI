@@ -83,23 +83,21 @@ def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
 
 @app.post("/teachers/", response_model=Teacher)
-def create_teacher(name: str):
-    query = Teacher.insert().values(name=name)
-    teacher_id = database.execute(query)
-    return {"id": teacher_id, "name": name}
+def create_student(teacher: TeacherCreate, db: Session = Depends(get_db)):
+    return add_teacher(db=db, teacher=teacher)
+
 
 @app.get("/teachers/", response_model=list[Teacher])
-def get_teachers():
+def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("get_teachers")
     cached_result = get_cache(cache_key)
     if cached_result:
         return cached_result
 
-    query = Teacher.select()
-    result = database.fetch_all(query)
+    teachers = retrieve_teachers(db=db, skip=skip, limit=limit)
 
-    set_cache(cache_key, result)
-    return result
+    set_cache(cache_key, teachers)
+    return teachers
 
 @app.post("/enroll/{student_id}/{course_id}/")
 def enroll_student(student_id: int, course_id: int):

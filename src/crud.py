@@ -8,12 +8,7 @@ from models import (
 )
 
 from schemas import (
-    Course as CourseSchema,
-    Teacher as TeacherSchema,
-    Lesson as LessonSchema,
-    Student as StudentSchema,
-    Enrollment as EnrollmentSchema,
-    CourseCreate, StudentCreate
+    CourseCreate, StudentCreate, TeacherCreate
 )
 
 
@@ -47,6 +42,17 @@ def add_student(db: Session, student: StudentCreate):
     db.commit()
     db.refresh(db_student)
     return db_student
+
+def add_teacher(db: Session, teacher: TeacherCreate):
+    db_teacher = DBTeacher(**teacher.dict())
+    db.add(db_teacher)
+    db.commit()
+    db.refresh(db_teacher)
+    return db_teacher
+
+
+def retrieve_teachers(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(DBTeacher).offset(skip).limit(limit).all()
 
 def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBStudent).offset(skip).limit(limit).all()
