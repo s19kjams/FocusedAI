@@ -103,13 +103,18 @@ def test_delete_enrollment(db):
 
     student = Student(username="Test Student Username")
     db.add(student)
-    
-    enrollment = Enrollment(course_id=course.id, student_id=student.id)
-    db.add(enrollment)
     db.commit()
     
-    response = disenroll_student(student.id, course.id, db)
-    assert response.student_id == student.id
+    enrollment = EnrollmentCreate(course_id=course.id, student_id=student.id)
+    enroll_student(enrollment, db)
+    
+    response = get_student_enrollments(student_id=student.id,db=db)
+    before_disenroll = len(response)
+    
+    disenroll_student(student.id, course.id, db)
+    response = get_student_enrollments(student_id=student.id,db=db)
+    
+    assert len(response) == before_disenroll - 1
     
 def test_get_enrollment_for_student(db):
     teacher = Teacher(name="Test Teacher Name")
@@ -120,12 +125,11 @@ def test_get_enrollment_for_student(db):
     
     course = Course(name="Test Course Name", teacher_id=teacher.id)
     db.add(course)
-
-    enrollment = Enrollment(course_id=course.id, student_id=student.id)
-    db.add(enrollment)
     db.commit()
 
-    response = get_enrollments(db=db)
+    enrollment = EnrollmentCreate(course_id=course.id, student_id=student.id)
+    enroll_student(enrollment, db)
+
     response = get_student_enrollments(student_id=student.id, db=db)
     assert response[-1].student_id == student.id
     assert response[-1].course_id == course.id
