@@ -80,7 +80,7 @@ def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
 
 @app.post("/teachers/", response_model=Teacher)
-def create_student(teacher: TeacherCreate, db: Session = Depends(get_db)):
+def create_teacher(teacher: TeacherCreate, db: Session = Depends(get_db)):
     return add_teacher(db=db, teacher=teacher)
 
 
@@ -97,12 +97,12 @@ def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     return teachers
 
 
-@app.post("/enroll/")
+@app.post("/enrollments/")
 def enroll_student(enrollment: EnrollmentCreate, db: Session = Depends(get_db)):
     return add_enrollment(db=db, enrollment=enrollment)
 
 
-@app.delete("/enroll/{student_id}/{course_id}")
+@app.delete("/enrollments/{student_id}/{course_id}")
 def disenroll_student(student_id: int, course_id: int, db: Session = Depends(get_db)):
     return remove_enrollment(db=db, student_id=student_id, course_id=course_id)
 

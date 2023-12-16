@@ -24,7 +24,6 @@ def add_course(db: Session, course: CourseCreate):
         logger.exception(f"Error adding course: {course.name}. Error: {str(e)}")
         raise
 
-
 def retrieve_courses(db: Session, skip: int = 0, limit: int = 100):
     try:
         return db.query(DBCourse).offset(skip).limit(limit).all()
@@ -59,7 +58,6 @@ def delete_course(db: Session, course_id: int):
         logger.exception(f"Error deleting course with ID: {course_id}. Error: {str(e)}")
         raise
 
-
 def add_student(db: Session, student: StudentCreate):
     try:
         db_student = DBStudent(**student.dict())
@@ -67,11 +65,11 @@ def add_student(db: Session, student: StudentCreate):
         db.commit()
         db.refresh(db_student)
         
-        logger.info(f"Added student: {student.name} with ID: {db_student.id}")
+        logger.info(f"Added student: {student.username} with ID: {db_student.id}")
         
         return db_student
     except Exception as e:
-        logger.exception(f"Error adding student: {student.name}. Error: {str(e)}")
+        logger.exception(f"Error adding student: {student.username}. Error: {str(e)}")
         raise
 
 def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
@@ -109,11 +107,11 @@ def add_lesson(db: Session, lesson: LessonCreate):
         db.commit()
         db.refresh(db_lesson)
         
-        logger.info(f"Added lesson: {lesson.name} with ID: {db_lesson.id}")
+        logger.info(f"Added lesson: {lesson.title} with ID: {db_lesson.id}")
         
         return db_lesson
     except Exception as e:
-        logger.exception(f"Error adding lesson: {lesson.name}. Error: {str(e)}")
+        logger.exception(f"Error adding lesson: {lesson.title}. Error: {str(e)}")
         raise
 
 def retrieve_lessons(db: Session, skip: int = 0, limit: int = 100):
