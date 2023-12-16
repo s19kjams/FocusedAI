@@ -1,0 +1,2 @@
+2023-12-16 01:47:44.813 | INFO     | crud:remove_enrollment:148 - Removed enrollment for student ID: 1 in course ID: 15
+2023-12-16 01:48:07.978 | INFO     | crud:add_enrollment:135 - Added enrollment for student 2 in course 15

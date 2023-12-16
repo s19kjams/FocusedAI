@@ -65,3 +65,5 @@ class Enrollment(EnrollmentBase):
 
     class Config:
         orm_mode = True
+
+Student.update_forward_refs()

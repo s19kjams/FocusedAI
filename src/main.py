@@ -102,6 +102,11 @@ def enroll_student(enrollment: EnrollmentCreate, db: Session = Depends(get_db)):
     return add_enrollment(db=db, enrollment=enrollment)
 
 
+@app.delete("/enroll/{student_id}/{course_id}")
+def disenroll_student(student_id: int, course_id: int, db: Session = Depends(get_db)):
+    return remove_enrollment(db=db, student_id=student_id, course_id=course_id)
+
+
 @app.get("/enrollments/", response_model=list[Enrollment])
 def get_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("enrollments")
