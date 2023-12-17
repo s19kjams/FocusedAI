@@ -1,4 +1,4 @@
-from typing import ForwardRef, List, Optional
+from typing import List
 from pydantic import BaseModel
 
 class CourseBase(BaseModel):

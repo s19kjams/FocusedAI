@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from database import Base
+from src.database import Base, engine
 
 class Course(Base):
     __tablename__ = "course"
@@ -37,3 +37,5 @@ class Enrollment(Base):
     course_id = Column(Integer, ForeignKey("course.id"))
     student = relationship("Student", back_populates="enrollments")
     course = relationship("Course", back_populates="enrollments")
+
+Base.metadata.create_all(engine)

@@ -1,11 +1,10 @@
 from fastapi import Depends, FastAPI
 from cachetools import TTLCache
 from cachetools.keys import hashkey
-from database import *
-from models import *
-from crud import *
-from schemas import *
-import uvicorn
+from src.database import *
+from src.models import *
+from src.crud import *
+from src.schemas import *
 
 app = FastAPI()
 
@@ -123,6 +122,3 @@ def get_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 def get_student_enrollments(student_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     enrollments = retrieve_student_enrollments(db=db, student_id=student_id, skip=skip, limit=limit)
     return enrollments
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)

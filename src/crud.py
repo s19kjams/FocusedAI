@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import (
+from src.models import (
     Course as DBCourse,
     Teacher as DBTeacher,
     Lesson as DBLesson,
@@ -7,7 +7,7 @@ from models import (
     Enrollment as DBEnrollment,
 )
 
-from schemas import *
+from src.schemas import *
 from loguru import logger
 
 logger.add("monitoring/app.log", rotation="500 MB", backtrace=True, diagnose=True)
