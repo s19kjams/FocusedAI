@@ -15,3 +15,11 @@ docker exec -it <container_name> bash
 
 Once inside the container, execute the test suite using pytest:
 pytest
+
+Using curl Commands to Interact with the API
+Below are examples of curl commands to interact with the API endpoints:
+for POST:
+curl -X POST -H "Content-Type: application/json" -d '{data}' http://0.0.0.0:8000/{api}
+
+for GET:
+curl http://localhost:8000/enrollments/
