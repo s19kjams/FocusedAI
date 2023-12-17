@@ -10,4 +10,6 @@ COPY ./src ./src
 
 COPY ./monitoring ./monitoring
 
+COPY ./test ./test
+
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

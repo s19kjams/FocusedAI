@@ -3,9 +3,9 @@ import sys
 
 import pytest
 sys.path.append("./src")
-from main import *
-from crud import *
-from models import *
+from src.main import *
+from src.crud import *
+from src.models import *
 
 client = TestClient(app)
 
