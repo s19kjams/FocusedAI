@@ -1,27 +1,96 @@
-Clone the repository.
-Navigate to the project directory.
-Running the Application
+### Introduction
 
-At first, make a file called .env in the root and like .env.example fulfill the data.
+### Learning Platform Backend Application
 
-To start the application, run the following command:
-docker-compose up --build
+This repository houses the backend application for a comprehensive learning platform designed to facilitate the exchange of teaching materials among educators and students. The system also tracks learning progress to enhance the educational experience.
 
-If you don't have docker compose installed, you can install it by running:
-sudo apt install docker-compose
+### Technical Overview
 
+The backend is developed using FastAPI, a Python framework, to create a robust and RESTful API. The API manages courses, lessons, and user profiles, enabling seamless interaction and data management.
+
+### Key Components
+
+- **API Development:** Utilizes FastAPI to build endpoints for course management, lesson creation, and user profile handling.
+  
+- **Database Schema:** Employs a PostgreSQL database schema to organize and store data related to courses, lessons, and user profiles.
+
+- **Containerization with Docker:** Utilizes Docker containers managed via Docker Compose to encapsulate and run the API and PostgreSQL database efficiently.
+
+- **Testing Framework:** Implements test cases using pytest to ensure the reliability and functionality of the application.
+
+- **Monitoring and Logging:** Integrates loguru for robust logging, providing essential insights into application operations.
+
+### Additional Features
+
+- **Rate Limiting:** Implements request limitations to ensure controlled access and efficient resource utilization.
+
+- **Caching Mechanisms:** Develops caching functionalities for improved performance in data retrieval and access.
+
+### Submission and Documentation
+
+The codebase is available in this GitHub repository, showcasing a well-structured and documented backend application. The repository encompasses comprehensive documentation and clean formatting.
+
+### Installation
+- Clone the repository.
+- Navigate to the project directory.
+
+### Running the Application
+1. Create a file named `.env` in the root directory and populate it as described in `.env.example`.
+2. Start the application using Docker Compose:
+   ```
+   docker-compose up --build
+   ```
+
+> Note: If Docker Compose is not installed, run `sudo apt install docker-compose` to install it.
+
+### Testing
 To run tests, follow these steps:
 
-Access the container's shell using:
-docker exec -it <container_name> bash
+1. Access the container's shell using:
+   ```
+   docker exec -it <container_name> bash
+   ```
+2. Execute the test suite using Pytest:
+   ```
+   pytest
+   ```
 
-Once inside the container, execute the test suite using pytest:
-pytest
+### Using API Endpoints
+Below are examples of `curl` commands to interact with the API endpoints:
 
-Using curl Commands to Interact with the API
-Below are examples of curl commands to interact with the API endpoints:
-for POST:
-curl -X POST -H "Content-Type: application/json" -d '{data}' http://0.0.0.0:8000/{api}
+#### Create Course
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{data}' http://0.0.0.0:8000/courses/
+```
 
-for GET:
-curl http://0.0.0.0:8000/{api}/
+#### Get Courses
+```bash
+curl http://0.0.0.0:8000/courses/
+```
+
+> Repeat the above format for each API endpoint, customizing the `curl` commands based on the respective HTTP methods and endpoints.
+
+### Database Design
+Provide a brief overview of the database design with the relevant models and relationships:
+
+- **Course**
+  - Attributes: `id`, `name`, `teacher_id`
+  - Relationships: `Teacher`, `Lesson`, `Enrollment`
+
+- **Teacher**
+  - Attributes: `id`, `name`
+  - Relationships: `Course`
+
+- **Lesson**
+  - Attributes: `id`, `title`, `course_id`
+  - Relationships: `Course`
+
+- **Student**
+  - Attributes: `id`, `username`
+  - Relationships: `Enrollment`
+
+- **Enrollment**
+  - Attributes: `id`, `student_id`, `course_id`
+  - Relationships: `Student`, `Course`
+
+Include any other necessary details or explanations about the database structure in this section.
