@@ -71,7 +71,17 @@ curl http://0.0.0.0:8000/courses/
 > Repeat the above format for each API endpoint, customizing the `curl` commands based on the respective HTTP methods and endpoints.
 
 ### Database Design
-Provide a brief overview of the database design with the relevant models and relationships:
+This backend system is structured around five key models that encapsulate the core entities within the learning platform:
+
+- **Course Model:** Represents a course offering within the platform. It holds essential attributes such as `id`, `name`, and `teacher_id`. This model maintains relationships with `Teacher`, `Lesson`, and `Enrollment`.
+
+- **Teacher Model:** Represents the educators associated with courses. It encompasses attributes like `id` and `name` and maintains a relationship with the `Course` model.
+
+- **Lesson Model:** Represents individual lessons or units within a course. It contains attributes such as `id`, `title`, and `course_id`, establishing a relationship with the `Course` model.
+
+- **Student Model:** Represents the learners using the platform. It includes attributes like `id` and `username` and is associated with the `Enrollment` model.
+
+- **Enrollment Model:** Acts as an intermediary to map students to courses. It contains attributes such as `id`, `student_id`, and `course_id` and establishes relationships with both `Student` and `Course` models.
 
 - **Course**
   - Attributes: `id`, `name`, `teacher_id`
@@ -92,5 +102,3 @@ Provide a brief overview of the database design with the relevant models and rel
 - **Enrollment**
   - Attributes: `id`, `student_id`, `course_id`
   - Relationships: `Student`, `Course`
-
-Include any other necessary details or explanations about the database structure in this section.
