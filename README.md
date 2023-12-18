@@ -24,4 +24,4 @@ for POST:
 curl -X POST -H "Content-Type: application/json" -d '{data}' http://0.0.0.0:8000/{api}
 
 for GET:
-curl http://localhost:8000/{api}/
+curl http://0.0.0.0:8000/{api}/
