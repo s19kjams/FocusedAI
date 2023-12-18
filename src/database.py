@@ -14,7 +14,7 @@ def create_database():
     postgres_host = os.getenv('POSTGRES_HOST')
     postgres_port = os.getenv('POSTGRES_PORT')
 
-    DEFAULT_DB_URL = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/postgres"
+    DEFAULT_DB_URL = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}"
     engine_default = create_engine(DEFAULT_DB_URL, isolation_level='AUTOCOMMIT')
 
     with engine_default.connect() as connection:

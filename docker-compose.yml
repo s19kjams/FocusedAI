@@ -10,6 +10,12 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 10
+      start_period: 30s
   app:
     build:
       context: .
@@ -19,4 +25,5 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
