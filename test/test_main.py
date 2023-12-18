@@ -33,9 +33,43 @@ def test_create_course(db):
     assert response.name == course_data.name
     assert response.teacher_id == teacher.id
 
+def test_update_course(db):
+    teacher = Teacher(name="Test Teacher Name")
+    db.add(teacher)
+    db.commit()
+    
+    course_data = CourseCreate(name="Test Course", teacher_id=teacher.id)
+    response = create_course(course_data, db)
+    
+    updated_course_data = CourseCreate(name="Updated Test Course", teacher_id=teacher.id)
+    updated_response = update_course(response.id, updated_course_data, db)
+    
+    assert updated_response.name == updated_course_data.name
+    assert updated_response.teacher_id == teacher.id
+
 def test_get_courses():
     response = client.get("/courses/")
     assert response.status_code == 200
+    
+    response = client.get("/courses/") # This time uses the cache
+    assert response.status_code == 200
+
+def test_delete_course(db):
+    teacher = Teacher(name="Test Teacher Name")
+    db.add(teacher)
+    db.commit()
+    
+    course_data = CourseCreate(name="Test Course", teacher_id=teacher.id)
+    new_course = add_course(db=db, course=course_data)
+    
+    # response = get_courses(db=db)
+    # before_delete_course = len(response)
+    
+    response = remove_course(db=db, course_id=new_course.id)
+    assert response == f"Course with ID {new_course.id} has been deleted"
+    
+    # response = get_courses(db=db)
+    # assert before_delete_course == len(response) + 1
 
 def test_create_student(db):
     student_data = StudentCreate(username="Test Student")
@@ -44,7 +78,6 @@ def test_create_student(db):
 
 def test_get_students():
     response = client.get("/students/")
-
     assert response.status_code == 200
 
 def test_create_teacher(db):
@@ -110,7 +143,7 @@ def test_delete_enrollment(db):
     enrollment = EnrollmentCreate(course_id=course.id, student_id=student.id)
     enroll_student(enrollment, db)
     
-    response = get_student_enrollments(student_id=student.id,db=db)
+    response = get_student_enrollments(student_id=student.id, db=db)
     before_disenroll = len(response)
     
     disenroll_student(student.id, course.id, db)

@@ -10,6 +10,6 @@ COPY ./src ./src
 
 COPY ./test ./test
 
-RUN mkdir monitoring
+RUN mkdir -p monitoring
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

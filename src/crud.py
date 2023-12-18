@@ -37,12 +37,11 @@ def add_course(db: Session, course: CourseCreate):
     return db_course
 
 @handle_exceptions("Error retreiving courses")
-@handle_exceptions
 def retrieve_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBCourse).offset(skip).limit(limit).all()
 
 @handle_exceptions("Error updating course")
-def update_course(db: Session, course_id: int, course_data: CourseCreate):
+def modify_course(db: Session, course_id: int, course_data: CourseCreate):
     db_course = db.query(DBCourse).filter(DBCourse.id == course_id).first()
     for key, value in course_data.dict().items():
         setattr(db_course, key, value)
@@ -54,11 +53,12 @@ def update_course(db: Session, course_id: int, course_data: CourseCreate):
     return db_course
 
 @handle_exceptions("Error deleting course")
-def delete_course(db: Session, course_id: int):
+def remove_course(db: Session, course_id: int):
     db_course = db.query(DBCourse).filter(DBCourse.id == course_id).first()
     db.delete(db_course)
     db.commit()
     logger.info(f"Deleted course with ID: {course_id}")
+    return f"Course with ID {course_id} has been deleted"
 
 @handle_exceptions("Error adding student")
 def add_student(db: Session, student: StudentCreate):

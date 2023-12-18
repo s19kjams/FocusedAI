@@ -24,7 +24,6 @@ def delete_cache(key):
     if key in cache:
         del cache[key]
 
-
 def get_db():
     db = SessionLocal()
     try:
@@ -39,6 +38,13 @@ def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     delete_cache(cache_key)
     return new_course
 
+@app.put("/courses/{course_id}", response_model=Course)
+def update_course(course_id: int, course_data: CourseCreate, db: Session = Depends(get_db)):
+    updated_course = modify_course(db=db, course_id=course_id, course_data=course_data)
+    cache_key = hashkey("courses")
+    delete_cache(cache_key)
+    return updated_course
+
 @app.get("/courses/", response_model=list[Course])
 def get_courses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("courses")
@@ -52,6 +58,12 @@ def get_courses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
     return courses
 
+@app.delete("/courses/{course_id}", status_code=204)
+def delete_course(course_id: int, db: Session = Depends(get_db)):
+    deleted_course = remove_course(db=db, course_id=course_id)
+    cache_key = hashkey("courses")
+    delete_cache(cache_key)
+    return deleted_course
 
 @app.post("/lessons/", response_model=Lesson)
 def create_lesson(lesson: LessonCreate, db: Session = Depends(get_db)):
@@ -59,7 +71,6 @@ def create_lesson(lesson: LessonCreate, db: Session = Depends(get_db)):
     cache_key = hashkey("lessons")
     delete_cache(cache_key)
     return new_lesson
-
 
 @app.get("/lessons/", response_model=list[Lesson])
 def get_lessons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -124,7 +135,6 @@ def enroll_student(enrollment: EnrollmentCreate, db: Session = Depends(get_db)):
     delete_cache(cache_key)
     return new_enrollment
 
-
 @app.delete("/enrollments/{student_id}/{course_id}")
 def disenroll_student(student_id: int, course_id: int, db: Session = Depends(get_db)):
     removed_enrollment = remove_enrollment(db=db, student_id=student_id, course_id=course_id)
@@ -132,7 +142,6 @@ def disenroll_student(student_id: int, course_id: int, db: Session = Depends(get
     cache_key = hashkey("enrollments")
     delete_cache(cache_key)
     return removed_enrollment
-
 
 @app.get("/enrollments/", response_model=list[Enrollment])
 def get_enrollments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

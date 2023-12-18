@@ -55,6 +55,31 @@ To run tests, follow these steps:
    pytest
    ```
 
+### Test Coverage
+To see the test coverage, follow these steps:
+
+1. Access the container's shell using:
+   ```
+   docker exec -it <container_name> bash
+   ```
+2. Execute the test suite using Pytest:
+   ```
+   python3 test/test_coverage.py
+   ```
+
+3. Now exit the container.
+   ```
+   exit
+   ```
+
+4. Now use this command to copy the result of test coverage to local:
+   ```
+   docker cp <container_name>:/app/htmlcov .
+   ```
+5. After running the script, you'll find a directory named htmlcov (or similar) generated in your project folder. Open the 
+   index.html file inside this directory in a web browser to view the coverage report.
+   This HTML report will provide a detailed overview of your codebase's coverage, showing which lines or functions were covered by tests and which were not.
+
 ### Monitoring
 To see logging message, follow these steps
 
