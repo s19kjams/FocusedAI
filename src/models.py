@@ -1,7 +1,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from src.database import setup_database
+from src.database import create_database, setup_database
 
+
+create_database()
 SessionLocal, database, Base, engine = setup_database()
 
 class Course(Base):

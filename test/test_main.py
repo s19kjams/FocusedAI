@@ -62,14 +62,14 @@ def test_delete_course(db):
     course_data = CourseCreate(name="Test Course", teacher_id=teacher.id)
     new_course = add_course(db=db, course=course_data)
     
-    # response = get_courses(db=db)
-    # before_delete_course = len(response)
+    response = get_courses(db=db)
+    before_delete_course = len(response)
     
-    response = remove_course(db=db, course_id=new_course.id)
+    response = delete_course(db=db, course_id=new_course.id)
     assert response == f"Course with ID {new_course.id} has been deleted"
     
-    # response = get_courses(db=db)
-    # assert before_delete_course == len(response) + 1
+    response = get_courses(db=db)
+    assert before_delete_course == len(response) + 1
 
 def test_create_student(db):
     student_data = StudentCreate(username="Test Student")
@@ -106,6 +106,9 @@ def test_create_lesson(db):
 
 def test_get_lessons():
     response = client.get("/lessons/")
+    assert response.status_code == 200
+    
+    response = client.get("/lessons/") # This time uses the cache
     assert response.status_code == 200
 
 def test_create_enrollment(db):
@@ -147,7 +150,7 @@ def test_delete_enrollment(db):
     before_disenroll = len(response)
     
     disenroll_student(student.id, course.id, db)
-    response = get_student_enrollments(student_id=student.id,db=db)
+    response = get_student_enrollments(student_id=student.id, db=db)
     
     assert len(response) == before_disenroll - 1
     

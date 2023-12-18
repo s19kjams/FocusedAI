@@ -1,0 +1,2 @@
+CREATE DATABASE focusedai;
+GRANT ALL PRIVILEGES ON DATABASE focusedai TO kiavash;

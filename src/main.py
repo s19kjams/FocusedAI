@@ -10,7 +10,6 @@ app = FastAPI()
 
 cache = TTLCache(maxsize=1000, ttl=60)
 
-create_database()
 SessionLocal, database, Base, _ = setup_database()
 
 
@@ -93,7 +92,6 @@ def create_student(student: StudentCreate, db: Session = Depends(get_db)):
     delete_cache(cache_key)
     return new_student
 
-
 @app.get("/students/", response_model=list[Student])
 def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("students")
@@ -114,7 +112,6 @@ def create_teacher(teacher: TeacherCreate, db: Session = Depends(get_db)):
     delete_cache(cache_key)
     return new_teacher
 
-
 @app.get("/teachers/", response_model=list[Teacher])
 def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     cache_key = hashkey("teachers")
@@ -126,7 +123,6 @@ def get_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
     set_cache(cache_key, teachers)
     return teachers
-
 
 @app.post("/enrollments/")
 def enroll_student(enrollment: EnrollmentCreate, db: Session = Depends(get_db)):

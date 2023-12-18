@@ -40,6 +40,4 @@ def setup_database(DATABASE_URL=""):
     database = Database(DATABASE_URL)
     Base = declarative_base()
 
-    Base.metadata.create_all(engine)
-
     return SessionLocal, database, Base, engine
