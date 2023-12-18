@@ -6,15 +6,17 @@ sys.path.append("./src")
 from src.main import *
 from src.crud import *
 from src.models import *
+from src.database import create_database, setup_database
 
 client = TestClient(app)
 
 @pytest.fixture(scope="session")
 def db():
     DATABASE_URL = "sqlite:///./test.db"
-    engine = create_engine(DATABASE_URL)
+    SessionLocal, database, Base, engine = setup_database(DATABASE_URL)
+    # engine = database.engine
     Base.metadata.create_all(bind=engine)
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    TestingSessionLocal = SessionLocal
 
     try:
         yield TestingSessionLocal()

@@ -2,6 +2,8 @@ Clone the repository.
 Navigate to the project directory.
 Running the Application
 
+At first, make a file called .env in the root and like .env.example fulfill the data.
+
 To start the application, run the following command:
 docker-compose up --build
 

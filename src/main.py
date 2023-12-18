@@ -1,14 +1,18 @@
 from fastapi import Depends, FastAPI
 from cachetools import TTLCache
 from cachetools.keys import hashkey
-from src.database import *
 from src.models import *
 from src.crud import *
 from src.schemas import *
+from src.database import create_database, setup_database
 
 app = FastAPI()
 
 cache = TTLCache(maxsize=1000, ttl=60)
+
+create_database()
+SessionLocal, database, Base, _ = setup_database()
+
 
 def get_cache(key):
     return cache.get(key)

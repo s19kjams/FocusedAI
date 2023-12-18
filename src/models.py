@@ -1,6 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from src.database import Base, engine
+from src.database import setup_database
+
+SessionLocal, database, Base, engine = setup_database()
 
 class Course(Base):
     __tablename__ = "course"
