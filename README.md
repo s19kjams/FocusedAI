@@ -55,6 +55,22 @@ To run tests, follow these steps:
    pytest
    ```
 
+### Monitoring
+To see logging message, follow these steps
+
+1. Access the container's shell using:
+   ```
+   docker exec -it <container_name> bash
+   ```
+2. Go to the monitoring directory:
+   ```
+   cd monitoring
+   ```
+3. Open the log file:
+   ```
+   cat app.log
+   ```
+
 ### Using API Endpoints
 Below are examples of `curl` commands to interact with the API endpoints:
 
