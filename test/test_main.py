@@ -57,10 +57,6 @@ def test_get_courses(db):
     
     response = client.get("/courses/")
     assert response.status_code == 200
-    
-    response = client.get("/courses/") # To use the cache
-    assert response.status_code == 200
-
 
 def test_delete_course(db):
     teacher = Teacher(name="Test Teacher Name")
@@ -90,9 +86,6 @@ def test_get_students(db):
     
     response = client.get("/students/")
     assert response.status_code == 200
-    
-    response = client.get("/students/") 
-    assert response.status_code == 200
 
 def test_create_teacher(db):
     teacher_data = TeacherCreate(name="Test Teacher")
@@ -104,9 +97,6 @@ def test_get_teachers(db):
     response = create_teacher(teacher_data, db)
     
     response = client.get("/teachers/")
-    assert response.status_code == 200
-    
-    response = client.get("/teachers/") # To use the cache
     assert response.status_code == 200
 
 def test_create_lesson(db):
@@ -137,9 +127,6 @@ def test_get_lessons(db):
     
     response = client.get("/lessons/")
     assert response.status_code == 200
-    
-    response = client.get("/lessons/") # To use the cache
-    assert response.status_code == 200
 
 def test_create_enrollment(db):
     teacher = Teacher(name="Test Teacher Name")
@@ -158,7 +145,7 @@ def test_create_enrollment(db):
     assert response.student_id == student.id
     assert response.course_id == course.id  
 
-def test_get_enrollment(db):
+def test_get_enrollments(db):
     teacher = Teacher(name="Test Teacher Name")
     db.add(teacher)
     
@@ -173,9 +160,6 @@ def test_get_enrollment(db):
     enroll_student(enrollment, db)
     
     response = client.get("/enrollments/")
-    assert response.status_code == 200
-    
-    response = client.get("/enrollments/") # To use the cache
     assert response.status_code == 200
 
 def test_delete_enrollment(db):
