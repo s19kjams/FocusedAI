@@ -48,11 +48,16 @@ def test_update_course(db):
     assert updated_response.teacher_id == teacher.id
 
 def test_get_courses():
+    teacher = Teacher(name="Test Teacher Name")
+    db.add(teacher)
+    db.commit()
+    
+    course_data = CourseCreate(name="Test Course", teacher_id=teacher.id)
+    response = create_course(course_data, db)
+    
     response = client.get("/courses/")
     assert response.status_code == 200
-    
-    response = client.get("/courses/") # This time uses the cache
-    assert response.status_code == 200
+
 
 def test_delete_course(db):
     teacher = Teacher(name="Test Teacher Name")

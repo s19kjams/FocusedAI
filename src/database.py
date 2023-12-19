@@ -14,7 +14,7 @@ def create_database():
     postgres_host = os.getenv('POSTGRES_HOST')
     postgres_port = os.getenv('POSTGRES_PORT')
 
-    DEFAULT_DB_URL = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}"
+    DEFAULT_DB_URL = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
     engine_default = create_engine(DEFAULT_DB_URL, isolation_level='AUTOCOMMIT')
 
     with engine_default.connect() as connection:
@@ -22,7 +22,7 @@ def create_database():
         existing_databases = [row[0] for row in existing_databases]
 
         if postgres_db not in existing_databases:
-            connection.execute(f"CREATE DATABASE {postgres_db}")
+            connection.execute(f"CREATE DATABASE IF NOT EXISTS {postgres_db}")
 
 def setup_database(DATABASE_URL=""):
     postgres_user = os.getenv('POSTGRES_USER')

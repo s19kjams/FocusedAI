@@ -2,7 +2,7 @@ version: '2'
 
 services:
   postgres:
-    image: postgres:13.4-alpine
+    image: postgres:15
     env_file:
       - .env
     ports:
@@ -11,11 +11,6 @@ services:
       - ./pgdata:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
 
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 5s
-      retries: 10
-      start_period: 30s
   app:
     build:
       context: .
@@ -25,5 +20,4 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
