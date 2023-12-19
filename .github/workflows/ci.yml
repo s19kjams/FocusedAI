@@ -7,6 +7,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
     services:
       postgres:
         image: postgres:15
