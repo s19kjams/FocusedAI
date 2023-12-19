@@ -1,12 +1,10 @@
 DO
 $do$
 BEGIN
-   IF EXISTS (
+   IF NOT EXISTS (
       SELECT FROM pg_catalog.pg_roles
       WHERE  rolname = 'kiavash') THEN
-
-      RAISE NOTICE 'Role "kiavash" already exists. Skipping.';
-   ELSE
+      
       CREATE ROLE kiavash LOGIN PASSWORD 'password';
    END IF;
 END

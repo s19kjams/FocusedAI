@@ -47,7 +47,7 @@ def test_update_course(db):
     assert updated_response.name == updated_course_data.name
     assert updated_response.teacher_id == teacher.id
 
-def test_get_courses():
+def test_get_courses(db):
     teacher = Teacher(name="Test Teacher Name")
     db.add(teacher)
     db.commit()
