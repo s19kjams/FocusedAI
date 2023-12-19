@@ -17,8 +17,6 @@ jobs:
           POSTGRES_DB: focusedai
           POSTGRES_USER: kiavash
           POSTGRES_PASSWORD: password
-      volumes:
-        - ./init-scripts:/docker-entrypoint-initdb.d
 
     steps:
     - name: Checkout code
