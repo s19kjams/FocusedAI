@@ -40,6 +40,10 @@ def add_course(db: Session, course: CourseCreate):
 def retrieve_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBCourse).offset(skip).limit(limit).all()
 
+@handle_exceptions("Error retrieving a course")
+def retrieve_course_by_id(db: Session, course_id: int):
+    return db.query(DBCourse).filter(DBCourse.id == course_id).first()
+
 @handle_exceptions("Error updating course")
 def modify_course(db: Session, course_id: int, course_data: CourseCreate):
     db_course = db.query(DBCourse).filter(DBCourse.id == course_id).first()
@@ -104,6 +108,10 @@ def add_lesson(db: Session, lesson: LessonCreate):
 @handle_exceptions("Error retrieving lessons")
 def retrieve_lessons(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBLesson).offset(skip).limit(limit).all()
+
+@handle_exceptions("Error retrieving lessons for course")
+def retrieve_lessons_for_course(db: Session, course_id: int, skip: int = 0, limit: int = 100):
+    return db.query(DBLesson).filter(DBLesson.course_id == course_id).offset(skip).limit(limit).all()
 
 @handle_exceptions("Error adding enrollment")
 def add_enrollment(db: Session, enrollment: EnrollmentCreate):

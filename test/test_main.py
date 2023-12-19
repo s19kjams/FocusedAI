@@ -58,6 +58,19 @@ def test_get_courses(db):
     response = client.get("/courses/")
     assert response.status_code == 200
 
+def test_get_course_by_id(db):
+    teacher = Teacher(name="Test Teacher Name")
+    db.add(teacher)
+    db.commit()
+
+    course_data = CourseCreate(name="Test Course", teacher_id=teacher.id)
+    new_course = create_course(course_data, db)
+
+    response_get_course = retrieve_course_by_id(db=db, course_id=new_course.id)
+    
+    assert response_get_course.name == course_data.name
+    assert response_get_course.teacher_id == teacher.id
+
 def test_delete_course(db):
     teacher = Teacher(name="Test Teacher Name")
     db.add(teacher)
@@ -123,10 +136,26 @@ def test_get_lessons(db):
     db.commit()
     
     lesson_data = LessonCreate(title="Test Lesson", course_id=course.id)
-    response = create_lesson(lesson_data, db)
+    create_lesson(lesson_data, db)
     
     response = client.get("/lessons/")
     assert response.status_code == 200
+
+def test_get_lessons_for_course(db):
+    teacher = Teacher(name="Test Teacher Name")
+    db.add(teacher)
+
+    course = Course(name="Test Course Name", teacher_id=teacher.id)
+    db.add(course)
+    db.commit()
+
+    lesson_data = LessonCreate(title="Test Lesson", course_id=course.id)
+    new_lesson = create_lesson(lesson_data, db)
+    
+    response_get_lessons_for_course = retrieve_lessons_for_course(db=db, course_id=new_lesson.course_id)
+    
+    assert any(lesson["id"] == new_lesson.id for lesson in response_get_lessons_for_course)
+
 
 def test_create_enrollment(db):
     teacher = Teacher(name="Test Teacher Name")

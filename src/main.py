@@ -5,6 +5,7 @@ from src.crud import *
 from src.schemas import *
 from src.database import setup_database
 from src.cache import *
+from src.schemas import Lesson as LessonSchema
 
 app = FastAPI()
 
@@ -44,6 +45,10 @@ def get_courses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
     return courses
 
+@app.get("/courses/{course_id}", response_model=Course)
+def get_course(course_id: int, db: Session = Depends(get_db)):
+    return retrieve_course_by_id(db=db, course_id=course_id)
+
 @app.delete("/courses/{course_id}", status_code=204)
 def delete_course(course_id: int, db: Session = Depends(get_db)):
     deleted_course = remove_course(db=db, course_id=course_id)
@@ -71,6 +76,9 @@ def get_lessons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
     return lessons
 
+@app.get("/courses/{course_id}/lessons/", response_model=list[Lesson])
+def get_lessons_for_course(course_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return retrieve_lessons_for_course(db=db, course_id=course_id, skip=skip, limit=limit)
 
 @app.post("/students/", response_model=Student)
 def create_student(student: StudentCreate, db: Session = Depends(get_db)):
@@ -90,7 +98,6 @@ def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
     set_cache(cache_key, students)
     return students
-
 
 @app.post("/teachers/", response_model=Teacher)
 def create_teacher(teacher: TeacherCreate, db: Session = Depends(get_db)):
