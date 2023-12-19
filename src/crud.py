@@ -10,6 +10,7 @@ from src.models import (
 
 from src.schemas import *
 from loguru import logger
+from src.errors import *
 
 logger.add("monitoring/app.log", rotation="500 MB", backtrace=True, diagnose=True)
 
@@ -27,7 +28,7 @@ def handle_exceptions(message):
 
     return decorator
 
-@handle_exceptions("Error adding course")
+@handle_exceptions(ERROR_ADD_COURSE)
 def add_course(db: Session, course: CourseCreate):
     db_course = DBCourse(**course.dict())
     db.add(db_course)
@@ -36,15 +37,15 @@ def add_course(db: Session, course: CourseCreate):
     logger.info(f"Added course: {course.name} with ID: {db_course.id}")
     return db_course
 
-@handle_exceptions("Error retreiving courses")
+@handle_exceptions(ERROR_RETRIEVE_COURSES)
 def retrieve_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBCourse).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error retrieving a course")
+@handle_exceptions(ERROR_RETRIEVE_COURSE_BY_ID)
 def retrieve_course_by_id(db: Session, course_id: int):
     return db.query(DBCourse).filter(DBCourse.id == course_id).first()
 
-@handle_exceptions("Error updating course")
+@handle_exceptions(ERROR_MODIFY_COURSE)
 def modify_course(db: Session, course_id: int, course_data: CourseCreate):
     db_course = db.query(DBCourse).filter(DBCourse.id == course_id).first()
     for key, value in course_data.dict().items():
@@ -56,7 +57,7 @@ def modify_course(db: Session, course_id: int, course_data: CourseCreate):
     
     return db_course
 
-@handle_exceptions("Error deleting course")
+@handle_exceptions(ERROR_REMOVE_COURSE)
 def remove_course(db: Session, course_id: int):
     db_course = db.query(DBCourse).filter(DBCourse.id == course_id).first()
     db.delete(db_course)
@@ -64,7 +65,7 @@ def remove_course(db: Session, course_id: int):
     logger.info(f"Deleted course with ID: {course_id}")
     return f"Course with ID {course_id} has been deleted"
 
-@handle_exceptions("Error adding student")
+@handle_exceptions(ERROR_ADD_STUDENT)
 def add_student(db: Session, student: StudentCreate):
     db_student = DBStudent(**student.dict())
     db.add(db_student)
@@ -75,11 +76,11 @@ def add_student(db: Session, student: StudentCreate):
     
     return db_student
 
-@handle_exceptions("Error retrieving students")
+@handle_exceptions(ERROR_RETRIEVE_STUDENTS)
 def retrieve_students(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBStudent).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error adding teacher")
+@handle_exceptions(ERROR_ADD_TEACHER)
 def add_teacher(db: Session, teacher: TeacherCreate):
     db_teacher = DBTeacher(**teacher.dict())
     db.add(db_teacher)
@@ -90,11 +91,11 @@ def add_teacher(db: Session, teacher: TeacherCreate):
     
     return db_teacher
 
-@handle_exceptions("Error retrieving teachers")
+@handle_exceptions(ERROR_RETRIEVE_TEACHERS)
 def retrieve_teachers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBTeacher).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error adding lesson")
+@handle_exceptions(ERROR_ADD_LESSON)
 def add_lesson(db: Session, lesson: LessonCreate):
     db_lesson = DBLesson(**lesson.dict())
     db.add(db_lesson)
@@ -105,15 +106,15 @@ def add_lesson(db: Session, lesson: LessonCreate):
     
     return db_lesson
 
-@handle_exceptions("Error retrieving lessons")
+@handle_exceptions(ERROR_RETRIEVE_LESSONS)
 def retrieve_lessons(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBLesson).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error retrieving lessons for course")
+@handle_exceptions(ERROR_LESSONS_FOR_COURSE)
 def retrieve_lessons_for_course(db: Session, course_id: int, skip: int = 0, limit: int = 100):
     return db.query(DBLesson).filter(DBLesson.course_id == course_id).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error adding enrollment")
+@handle_exceptions(ERROR_ADD_ENROLLMENT)
 def add_enrollment(db: Session, enrollment: EnrollmentCreate):
     db_enrollment = DBEnrollment(**enrollment.dict())
     db.add(db_enrollment)
@@ -124,7 +125,7 @@ def add_enrollment(db: Session, enrollment: EnrollmentCreate):
     
     return db_enrollment
 
-@handle_exceptions("Error removing enrollment")
+@handle_exceptions(ERROR_REMOVE_ENROLLMENT)
 def remove_enrollment(db: Session, student_id: int, course_id: int):
     db_enrollment = db.query(DBEnrollment).filter_by(student_id=student_id, course_id=course_id).first()
     db.delete(db_enrollment)
@@ -134,10 +135,10 @@ def remove_enrollment(db: Session, student_id: int, course_id: int):
     
     return {"message": "Enrollment removed successfully"}
 
-@handle_exceptions("Error retrieving enrollments")
+@handle_exceptions(ERROR_RETRIEVE_ENROLLMENTS)
 def retrieve_enrollments(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBEnrollment).offset(skip).limit(limit).all()
 
-@handle_exceptions("Error retrieving student enrollments")
+@handle_exceptions(ERROR_RETRIEVE_STUDENT_ENROLLMENTS)
 def retrieve_student_enrollments(db: Session, student_id: int, skip: int = 0, limit: int = 100):
     return db.query(DBEnrollment).filter(DBEnrollment.student_id == student_id).offset(skip).limit(limit).all()
