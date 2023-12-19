@@ -38,7 +38,11 @@ The codebase is available in this GitHub repository, showcasing a well-structure
 1. Create a file named `.env` in the root directory and populate it as described in `.env.example`.
 2. Start the application using Docker Compose:
    ```
-   docker-compose up --build
+   docker compose up --build
+   ```
+   if you want to run it in deatched mode:
+   ```
+   docker compose up --build -d
    ```
 
 > Note: If Docker Compose is not installed, run `sudo apt install docker-compose` to install it.
@@ -46,37 +50,24 @@ The codebase is available in this GitHub repository, showcasing a well-structure
 ### Testing
 To run tests, follow these steps:
 
-1. Access the container's shell using:
+1. Access the container's shell using and execute the test suite using Pytest:
    ```
-   docker exec -it <container_name> bash
-   ```
-2. Execute the test suite using Pytest:
-   ```
-   pytest
+   docker exec -it <container_name> pytest
    ```
 
 ### Test Coverage
 To see the test coverage, follow these steps:
 
-1. Access the container's shell using:
+1. Access the container's shell using and execute the test suite using Pytest:
    ```
-   docker exec -it <container_name> bash
-   ```
-2. Execute the test suite using Pytest:
-   ```
-   python3 test/test_coverage.py
+   docker exec -it <container_name> python3 test/test_coverage.py
    ```
 
-3. Now exit the container.
-   ```
-   exit
-   ```
-
-4. Now use this command to copy the result of test coverage to local:
+2. Now use this command to copy the result of test coverage to local:
    ```
    docker cp <container_name>:/app/htmlcov .
    ```
-5. After running the script, you'll find a directory named htmlcov (or similar) generated in your project folder. Open the 
+3. After running the script, you'll find a directory named htmlcov (or similar) generated in your project folder. Open the 
    index.html file inside this directory in a web browser to view the coverage report.
    This HTML report will provide a detailed overview of your codebase's coverage, showing which lines or functions were covered by tests and which were not.
 
