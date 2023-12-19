@@ -151,10 +151,12 @@ def test_get_lessons_for_course(db):
 
     lesson_data = LessonCreate(title="Test Lesson", course_id=course.id)
     new_lesson = create_lesson(lesson_data, db)
+    lesson_data = LessonCreate(title="Test Lesson", course_id=course.id)
+    new_lesson = create_lesson(lesson_data, db)
     
     response_get_lessons_for_course = retrieve_lessons_for_course(db=db, course_id=new_lesson.course_id)
-    
-    assert any(lesson["id"] == new_lesson.id for lesson in response_get_lessons_for_course)
+
+    assert any(lesson.id == new_lesson.id for lesson in response_get_lessons_for_course)
 
 
 def test_create_enrollment(db):

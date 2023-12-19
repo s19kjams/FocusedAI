@@ -5,7 +5,6 @@ from src.crud import *
 from src.schemas import *
 from src.database import setup_database
 from src.cache import *
-from src.schemas import Lesson as LessonSchema
 
 app = FastAPI()
 
