@@ -29,9 +29,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Wait for Postgres
+        run: |
+          sleep 10  # Allow some time for the database to start properly
+      
       - name: Setup database
         run: |
-          docker exec postgres psql -U kiavash -c 'CREATE DATABASE "focusedai";'
+          psql -h localhost -U kiavash -c 'CREATE DATABASE focusedai'
 
       - name: Run tests
         run: |
