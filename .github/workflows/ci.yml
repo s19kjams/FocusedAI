@@ -36,6 +36,8 @@ jobs:
       - name: Setup database
         run: |
           psql -h localhost -U kiavash -c 'CREATE DATABASE focusedai'
+        env:
+          PGPASSWORD: password
 
       - name: Run tests
         run: |
