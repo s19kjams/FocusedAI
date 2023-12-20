@@ -11,7 +11,7 @@ jobs:
         image: circleci/postgres:13.3
         ports:
           - 5432:5432
-        environment:
+        env:
           POSTGRES_DB: focusedai
           POSTGRES_USER: kiavash
           POSTGRES_PASSWORD: password
