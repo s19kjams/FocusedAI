@@ -15,6 +15,7 @@ jobs:
           POSTGRES_DB: focusedai
           POSTGRES_USER: kiavash
           POSTGRES_PASSWORD: password
+          POSTGRES_PORT: 5432
 
     steps:
       - name: Checkout code
@@ -35,9 +36,14 @@ jobs:
       
       - name: Setup database
         run: |
-          psql -h localhost -U kiavash -d postgres -c 'focusedai'
+          if ! psql -h localhost -U kiavash -lqt | cut -d \| -f 1 | grep -qw focusedai; then
+            psql -h localhost -U kiavash -d postgres -c 'CREATE DATABASE focusedai'
+          else
+            echo "Database focusedai already exists."
+          fi
         env:
           PGPASSWORD: password
+        
 
       - name: Run tests
         run: |
