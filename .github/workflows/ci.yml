@@ -33,7 +33,8 @@ jobs:
         pip install -r requirements.txt
 
     - name: Setup database
-        run: psql -h postgres -U kiavash -c 'CREATE DATABASE "focusedai";'
+        run: |
+          psql -h postgres -U kiavash -c 'CREATE DATABASE "focusedai";'
         env:
           PGPASSWORD: password
   
