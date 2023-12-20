@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     services:
@@ -20,24 +19,24 @@ jobs:
           POSTGRES_PORT: 5432
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
       
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Setup database
+      - name: Setup database
         run: |
           psql -h postgres -U kiavash -c 'CREATE DATABASE "focusedai";'
         env:
           PGPASSWORD: password
-  
-    - name: Run tests
-      run: |
-        pytest ./test/test_main.py
+
+      - name: Run tests
+        run: |
+          pytest ./test/test_main.py
