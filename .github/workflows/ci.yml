@@ -15,6 +15,7 @@ jobs:
           POSTGRES_DB: focusedai
           POSTGRES_USER: kiavash
           POSTGRES_PASSWORD: password
+          POSTGRES_PORT: 5432
 
     steps:
       - name: Checkout code
