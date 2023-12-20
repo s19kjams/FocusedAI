@@ -35,8 +35,7 @@ The codebase is available in this GitHub repository, showcasing a well-structure
 - Navigate to the project directory.
 
 ### Running the Application
-1. Create a file named `.env` in the root directory and populate it as described in `.env.example`.
-2. Start the application using Docker Compose:
+1. Start the application using Docker Compose:
    ```
    docker compose up --build
    ```
